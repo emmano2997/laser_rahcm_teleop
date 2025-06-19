@@ -1,0 +1,7 @@
+wheel_controller: #XBOX
+  ros__parameters:
+    axis_linear: 1
+    axis_angular: 3
+    e_stop_button: 1   # B button 
+    scale_linear: 0.5
+    scale_angular: 1.0
