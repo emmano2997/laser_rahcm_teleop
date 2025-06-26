@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<robot name="rc_teleop" xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <!-- Add dummy root link to fix KDL warning -->
+  <link name="dummy_root">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <joint name="dummy_joint" type="fixed">
+    <parent link="dummy_root"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Define materials for both URDF and Gazebo -->
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <gazebo reference="gray">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <gazebo reference="black">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <gazebo reference="green">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <gazebo reference="white">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <!-- Import modules -->
+  <xacro:include filename="base.urdf.xacro"/>
+  <xacro:include filename="arm.urdf.xacro"/>
+  <xacro:include filename="wheel.urdf.xacro"/>
+  <xacro:include filename="wheel_arm_joint.urdf.xacro"/>
+
+  <!-- Main body -->
+  <xacro:base name="base"/>
+
+  <!-- Arms and Wheels -->
+  <xacro:arm name="arm_front_left" parent="base_link" xyz="-0.45 0.4 -0.3" rpy="0 -0.9 3.14"/>
+  <xacro:joint_arm name="joint_arm_front_left" parent="arm_front_left" xyz="0 0 -0.35" rpy="0 -0.7 0"/>
+  <xacro:wheel name="wheel_front_left" parent="joint_arm_front_left" xyz="0 0 -0.25" rpy="0 0 0"/>
+
+  <xacro:arm name="arm_front_right" parent="base_link" xyz="-0.45 -0.38 -0.3" rpy="0 -0.9 3.14"/>
+  <xacro:joint_arm name="joint_arm_front_right" parent="arm_front_right" xyz="0 0 -0.35" rpy="0 -0.7 0"/>
+  <xacro:wheel name="wheel_front_right" parent="joint_arm_front_right" xyz="0 0 -0.25" rpy="0 0 0"/>
+
+  <xacro:arm name="arm_rear_left" parent="base_link" xyz="0.45 0.4 -0.3" rpy="0 -0.9 0"/>
+  <xacro:joint_arm name="joint_arm_rear_left" parent="arm_rear_left" xyz="0 0 -0.35" rpy="0 -0.7 0"/>
+  <xacro:wheel name="wheel_rear_left" parent="joint_arm_rear_left" xyz="0 0 -0.25" rpy="0 0 0"/>
+
+  <xacro:arm name="arm_rear_right" parent="base_link" xyz="0.45 -0.38 -0.3" rpy="0 -0.9 0"/>
+  <xacro:joint_arm name="joint_arm_rear_right" parent="arm_rear_right" xyz="0 0 -0.35" rpy="0 -0.7 0"/>
+  <xacro:wheel name="wheel_rear_right" parent="joint_arm_rear_right" xyz="0 0 -0.25" rpy="0 0 0"/>
+
+  <!-- ROS2 Control -->
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+
+    <joint name="wheel_front_left_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="wheel_front_right_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="wheel_rear_left_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    <joint name="wheel_rear_right_joint">
+      <command_interface name="velocity"/>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
+    
+    <!-- Transmissions -->
+    <transmission name="trans_wheel_front_left">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="wheel_front_left_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_front_left">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so"/>
+    </transmission>
+
+    <transmission name="trans_wheel_front_right">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="wheel_front_right_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_front_right">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so"/>
+    </transmission>
+
+    <transmission name="trans_wheel_rear_left">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="wheel_rear_left_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_rear_left">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so"/>
+    </transmission>
+
+    <transmission name="trans_wheel_rear_right">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="wheel_rear_right_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_rear_right">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros2_control.so"/>
+    </transmission>
+
+  </ros2_control>
+
+  <!-- Gazebo ROS2 Control Plugin - CORRIGIDO -->
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>$(find rc_teleop)/config/diff_drive_controller.yaml</parameters>
+      <controller_manager_node_name>/controller_manager</controller_manager_node_name>
+    </plugin>
+  </gazebo>
+</robot>
