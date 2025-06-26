@@ -19,6 +19,7 @@ find_package(tf2_ros REQUIRED)
 find_package(urdf REQUIRED)
 find_package(xacro REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(gazebo_ros REQUIRED)
 
 add_executable(rc_teleop src/rc_teleop.cpp)
 ament_target_dependencies(rc_teleop rclcpp sensor_msgs tf2_geometry_msgs)
@@ -34,7 +35,7 @@ install(TARGETS
 )
 
 install(
-  DIRECTORY urdf launch
+  DIRECTORY urdf launch config
   DESTINATION share/${PROJECT_NAME}
 )
 
