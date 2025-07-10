@@ -71,3 +71,6 @@ bash
 cd ~/ros2_ws
 colcon build --packages-select teleop_controller
 source install/setup.bash
+
+
+ros2 run joy joy_node
