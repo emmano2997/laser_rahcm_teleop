@@ -56,4 +56,3 @@ Running the teleop system
 
     ros2 launcher laser_rahcm_teleop teleop.launch.py
 
-ros2 launch laser_rahcm_teleop teleop.launch.py
