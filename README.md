@@ -28,17 +28,10 @@ Este pacote ROS2 fornece um nó para controle teleoperado de robôs móveis com 
 
     Controle de velocidade linear e angular via joystick
 
-    Botão de segurança (enable) para habilitar o controle
-
-    Freio de emergência com mensagem destacada
-
-    Mensagens informativas para cada direção de movimento
-
-    Parâmetros configuráveis via arquivo YAML
 
 📦 Dependências
 
-    ROS2 Humble (ou versão mais recente)
+    ROS2 Humble
 
     sensor_msgs
 
@@ -50,27 +43,16 @@ Este pacote ROS2 fornece um nó para controle teleoperado de robôs móveis com 
 
     Clone este repositório para o seu workspace ROS2:
 
-bash
 
 cd ~/ros2_ws/src
 git clone https://github.com/emmano2997/ros2_teleop_ws.git
 
     Construa o pacote:
 
-bash
-
-cd ~/ros2_ws
-colcon build --packages-select teleop_controller
-source install/setup.bash
-git clone https://github.com/emmano2997/ros2_teleop_ws.git
-
-    Construa o pacote:
-
-bash
-
 cd ~/ros2_ws
 colcon build --packages-select teleop_controller
 source install/setup.bash
 
+Running the teleop system
 
-ros2 run joy joy_node
+ros2 launch laser_rahcm_teleop teleop.launch.py
